@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a href="/timestamp-maker" target="_blank"><button>Timestamp Maker</button></a>
+      <a href="/timestamp-maker" target="_blank"><button>Timestamp Maker</button></a>
     </div>
   </template>
   
