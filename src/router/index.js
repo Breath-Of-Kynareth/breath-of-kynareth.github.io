@@ -8,11 +8,6 @@ const routes = [
     component: HomePage,
   },
   {
-    path: '/test',
-    name: 'test',
-    component: () => import('../pages/test.vue'),
-  },
-  {
     path: '/timestamp',
     name: 'timestamp',
     component: TimestampPage
