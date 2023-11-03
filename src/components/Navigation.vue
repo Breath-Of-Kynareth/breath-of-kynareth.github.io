@@ -1,8 +1,21 @@
 <template>
-  <div class="card relative z-2">
-      <Menubar :model="items"><img alt="logo" src="https://primefaces.org/cdn/primevue/images/logo.svg" height="40" class="mr-2" /></Menubar>
-  </div>
-  <button type="button" @click="showModal = true">Set Name</button>
+    <div class="card relative z-2">
+        <Menubar :model="items">
+          <template #item="{ label, item, props, root, hasSubmenu }">
+              <router-link v-if="item.route" v-slot="routerProps" :to="item.route" custom>
+                  <a :href="routerProps.href" v-bind="props.action" @click="routerProps.navigate">
+                      <span v-bind="props.icon" />
+                      <span v-bind="props.label">{{ label }}</span>
+                  </a>
+              </router-link>
+              <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                  <span v-bind="props.icon" />
+                  <span v-bind="props.label">{{ label }}</span>
+                  <span :class="[hasSubmenu && (root ? 'pi pi-fw pi-angle-down' : 'pi pi-fw pi-angle-right')]" v-bind="props.submenuicon" />
+              </a>
+          </template>
+        </Menubar>
+    </div>
   <div class="ModalWrapper">
     <Modal
         v-model="showModal"
@@ -23,6 +36,13 @@
 </template>
 
 <script lang="ts">
+/*
+
+  <div class="card relative z-2">
+      <Menubar :model="items"><img alt="logo" src="https://primefaces.org/cdn/primevue/images/logo.svg" height="40" class="mr-2" /></Menubar>
+  </div>
+
+*/
 import { ref, onMounted } from "vue";
 // @ts-ignore
 import { Modal, useModal } from '@kouts/vue-modal';
@@ -57,9 +77,13 @@ export default {
       localStorage.setItem("userName", userName.value!);
     };
 
+    const setShowModal = () => {
+      showModal.value = true;
+    }
+
     const items = ref([
     {
-        label: 'Timestamp Maker',
+        label: 'Rosters',
         items: [
             {
                 label: 'New',
@@ -90,11 +114,13 @@ export default {
     },
     {
         label: 'Timestamp Maker',
+        route: '/timestamp'
         
     },
     {
-        label: 'Quit',
-        icon: 'pi pi-fw pi-power-off'
+        label: 'Set Name',
+        icon: 'pi pi-fw pi-power-off',
+        command: () => setShowModal()
     }
 ]);
 
@@ -117,7 +143,8 @@ export default {
       userName,
       saveName,
       skipName,
-      updateLocalStorage
+      updateLocalStorage,
+      setShowModal
     };
   },
 };
