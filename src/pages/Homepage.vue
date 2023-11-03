@@ -1,12 +1,13 @@
 <template>
   <div>
-    <router-link to="/timestamp"><button>Timestamp Maker</button></router-link>
+    <Navigation />
   </div>
 </template>
   
   <script lang="ts">
+  import Navigation from '../components/Navigation.vue';
   export default {
-    components: { },
+    components: { Navigation },
     setup() {
 
       return {
