@@ -22,6 +22,7 @@
     "@vvo/tzdb": "^6.110.0",
     "animate.css": "^4.1.1",
     "luxon": "^3.4.3",
+    "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
     "primevue": "^3.39.0",
     "vue": "^3.3.4",

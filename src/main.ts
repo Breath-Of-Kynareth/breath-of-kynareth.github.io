@@ -16,6 +16,7 @@ import router from './router/index.js';
 import '@kouts/vue-modal/dist/vue-modal.css';
 import 'primevue/resources/themes/viva-dark/theme.css';
 import 'primeicons/primeicons.css';
+import 'primeflex/primeflex.css'
 import 'animate.css';
 
 /* add icons to the library */
