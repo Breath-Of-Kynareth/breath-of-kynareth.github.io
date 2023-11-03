@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomePage from '../components/Homepage.vue';
-
+import HomePage from '../pages/Homepage.vue';
+import TimestampPage from '../pages/TimestampPage.vue'
 const routes = [
   {
     path: '/',
@@ -10,8 +10,13 @@ const routes = [
   {
     path: '/test',
     name: 'test',
-    component: () => import('../components/test.vue'),
+    component: () => import('../pages/test.vue'),
   },
+  {
+    path: '/timestamp',
+    name: 'timestamp',
+    component: TimestampPage
+  }
 ];
 
 const router = createRouter({
