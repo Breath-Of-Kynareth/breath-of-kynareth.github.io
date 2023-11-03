@@ -9,17 +9,23 @@
       :timezone="timezone" :text-input="textInputOptions" @update:model-value="generateTimestamp" />
   </div>
   <div>
-    <input id="timestampbox" v-model="generatedTimestamp" readonly />
-    <button @click="copyToClipboard">
-      <font-awesome-icon :icon="['fas', 'clipboard']" flip style="color: #2f8a02;"  />
-    </button>
+    <div class="grid">
+      <div class="col-12" v-for="row in getRows(generatedTimestamp)" :key="row.id">
+        <div class="text-center p-3 border-round-sm bg-primary font-bold">
+          {{ row.id }}
+          <button @click="copyToClipboard(row.id)">
+            <font-awesome-icon :icon="['fas','clipboard']" flip style="color: #2f8a02" />
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { timeZonesNames} from "@vvo/tzdb";
 import Dropdown from 'primevue/dropdown';
 
@@ -30,18 +36,39 @@ export default {
     const date = ref(new Date());
     const timezone = ref();
     const timezones = timeZonesNames;
-    const generatedTimestamp = ref();
+    const generatedTimestamp = ref()
+
 
     const textInputOptions = {}
+
+    watch(generatedTimestamp.value, async () =>{
+      getRows();
+    })
+
+    const getRows = () => {
+
+
+
+      return [
+        { id: `<t:${generatedTimestamp.value}:d>` },
+        { id: `<t:${generatedTimestamp.value}:D>` },
+        { id: `<t:${generatedTimestamp.value}:t>` },
+        { id: `<t:${generatedTimestamp.value}:T>` },
+        { id: `<t:${generatedTimestamp.value}:f>` },
+        { id: `<t:${generatedTimestamp.value}:F>` },
+        { id: `<t:${generatedTimestamp.value}:r>` },
+        { id: `${generatedTimestamp.value}` },
+      ]
+    }
 
     const generateTimestamp = () => {
       const formatDate = new Date(date.value)
       const utcTimestamp = Math.floor((formatDate.getTime()) / 1000);
-      generatedTimestamp.value = `<t:${utcTimestamp}:F>`;
+      generatedTimestamp.value = utcTimestamp;
     };
 
-    const copyToClipboard = () => {
-      navigator.clipboard.writeText(generatedTimestamp.value);
+    const copyToClipboard = (value: string) => {
+      navigator.clipboard.writeText(value);
     };
 
     onMounted(() => {
@@ -59,7 +86,8 @@ export default {
       generateTimestamp,
       copyToClipboard,
       generatedTimestamp,
-      textInputOptions
+      textInputOptions,
+      getRows
     }
   }
 }
