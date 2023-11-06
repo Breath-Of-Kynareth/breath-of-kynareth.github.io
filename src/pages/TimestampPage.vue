@@ -79,6 +79,7 @@ export default {
 
       const dateTime = new Date(parseInt(generatedTimestamp.value) * 1000);
       // dateTime.getHours() >= 12 ? 'PM' : 'AM'
+      dateTime.getMinutes() < 10 ? '0' +  dateTime.getMinutes() : dateTime.getMinutes()
 
       switch(formatChoice){
         case 'd':
@@ -86,13 +87,17 @@ export default {
         case 'D':
           return `${ months[dateTime.getMonth()] } ${ dateTime.getDate() }, ${ dateTime.getFullYear() }`;
         case 't':
-          return `${ dateTime.getHours() % 12 }:${ dateTime.getMinutes() } ${ dateTime.getHours() >= 12 ? 'PM' : 'AM' }`;
+          return `${ dateTime.getHours() % 12 }:${ dateTime.getMinutes() < 10 ? '0' +  dateTime.getMinutes() : dateTime.getMinutes() }
+           ${ dateTime.getHours() >= 12 ? 'PM' : 'AM' }`;
         case 'T':
-          return `${ dateTime.getHours() % 12 }:${ dateTime.getMinutes() }:00 ${ dateTime.getHours() >= 12 ? 'PM' : 'AM' }`;
+          return `${ dateTime.getHours() % 12 }:${ dateTime.getMinutes() < 10 ? '0' +  dateTime.getMinutes() : dateTime.getMinutes() }:00 
+          ${ dateTime.getHours() >= 12 ? 'PM' : 'AM' }`;
         case 'f':
-          return `${ months[dateTime.getMonth()] } ${ dateTime.getDate() }, ${ dateTime.getFullYear() } ${ dateTime.getHours() % 12 }:${ dateTime.getMinutes() }`;
+          return `${ months[dateTime.getMonth()] } ${ dateTime.getDate() }, ${ dateTime.getFullYear() } 
+          ${ dateTime.getHours() % 12 }:${ dateTime.getMinutes() < 10 ? '0' +  dateTime.getMinutes() : dateTime.getMinutes()}`;
         case 'F':
-          return `${ weekdays[dateTime.getDay()] }, ${ months[dateTime.getMonth()] } ${ dateTime.getDate() }, ${ dateTime.getFullYear() } ${ dateTime.getHours() % 12 }:${ dateTime.getMinutes() }`;
+          return `${ weekdays[dateTime.getDay()] }, ${ months[dateTime.getMonth()] } ${ dateTime.getDate() }, ${ dateTime.getFullYear() } 
+          ${ dateTime.getHours() % 12 }:${ dateTime.getMinutes() < 10 ? '0' +  dateTime.getMinutes() : dateTime.getMinutes() }`;
         case 'R':
           return 'In x minutes/ x Hours Ago'; // TODO: Figure out the implementation of this feature in here.
         case '0':
