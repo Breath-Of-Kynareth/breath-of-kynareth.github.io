@@ -1,6 +1,6 @@
 <template>
     <div class="card relative z-2">
-        <Menubar :model="items">
+        <Menubar :model="items" class="myMenu">
           <template #item="{ label, item, props, root, hasSubmenu }">
               <router-link v-if="item.route" v-slot="routerProps" :to="item.route" custom>
                   <a :href="routerProps.href" v-bind="props.action" @click="routerProps.navigate">
@@ -19,7 +19,7 @@
   <div class="ModalWrapper">
     <Modal
         v-model="showModal"
-        title="Set Your Name"
+        title="Set Your Token"
         wrapper-class="animate__animated modal-wrapper"
         :in-class=modalIn
         :out-class=modalOut
@@ -27,7 +27,7 @@
         :bg-in-class=bgIn
         :bg-out-class=bgOut>
         <div class="modalForm">
-          <InputText type="text" v-model="userName" placeholder="Enter your name" />
+          <InputText type="text" v-model="bokToken" placeholder="Enter your Token" />
           <br>
           <button @click="saveName">Submit</button>
         </div>
@@ -60,21 +60,17 @@ export default {
     const bgOut = 'animate__fadeOutDown';
 
     const showModal = ref(false);
-    const userName = ref();
+    const bokToken = ref();
 
     const saveName = () => {
-      if (userName.value) {
-        localStorage.setItem("userName", userName.value);
+      if (bokToken.value) {
+        localStorage.setItem("bokToken", bokToken.value);
       }
       showModal.value = false;
     };
 
-    const skipName = () => {
-      localStorage.setItem("userName", "User");
-    };
-
     const updateLocalStorage = () => {
-      localStorage.setItem("userName", userName.value!);
+      localStorage.setItem("bokToken", bokToken.value!);
     };
 
     const setShowModal = () => {
@@ -82,6 +78,98 @@ export default {
     }
 
     const items = ref([
+    {
+      label: 'Rosters',
+      route: '/rosters',
+      icon: 'pi pi-fw pi-copy'
+    },
+    {
+        label: 'Timestamp Maker',
+        route: '/timestamp',
+        icon: 'pi pi-fw pi-history'
+        
+    },
+    {
+      label: 'Home',
+      route: '/',
+      icon: 'pi pi-fw pi-home'
+    },
+    {
+        label: 'Set Token',
+        icon: 'pi pi-fw pi-unlock',
+        command: () => setShowModal()
+    }
+]);
+
+    onMounted(() => {
+      const storedName = localStorage.getItem("bokToken");
+      if (storedName) {
+        bokToken.value = storedName;
+        showModal.value = false;
+      } else {
+        localStorage.setItem("bokToken", "None");
+      }
+    });
+
+    return {
+      items,
+      modalIn,
+      modalOut,
+      bgIn,
+      bgOut,
+      show,
+      showModal,
+      bokToken,
+      saveName,
+      updateLocalStorage,
+      setShowModal
+    };
+  },
+};
+</script>
+
+<style>
+
+.myMenu li.wijmo-wijmenu-parent > a {
+	text-align: right;
+}
+
+.myMenu ul:first-child > li.wijmo-wijmenu-parent > a > span,
+.myMenu ul:first-child > li.wijmo-wijmenu-parent > a > span > span {
+	float: left !important;
+}
+
+.myMenu li.wijmo-wijmenu-parent > a > span,
+.myMenu li.wijmo-wijmenu-parent > a > span > span {
+	float: none !important;
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+.vm-titlebar{
+  background-color: #403b4f;
+}
+.vm-content{
+  background-color: #403b4f;
+}
+.modal-wrapper {
+  display: flex;
+  align-items: center;
+}
+.modal-wrapper .vm {
+  top: auto;
+}
+
+.modalForm{
+  text-align: center;
+  text-justify: center;
+}
+</style>
+
+
+<!--
+Multi-option menu save.
+
     {
         label: 'Rosters',
         items: [
@@ -112,61 +200,5 @@ export default {
             }
         ]
     },
-    {
-        label: 'Timestamp Maker',
-        route: '/timestamp'
-        
-    },
-    {
-        label: 'Set Name',
-        icon: 'pi pi-fw pi-power-off',
-        command: () => setShowModal()
-    }
-]);
 
-    onMounted(() => {
-      const storedName = localStorage.getItem("userName");
-      if (storedName) {
-        userName.value = storedName;
-        showModal.value = false;
-      }
-    });
-
-    return {
-      items,
-      modalIn,
-      modalOut,
-      bgIn,
-      bgOut,
-      show,
-      showModal,
-      userName,
-      saveName,
-      skipName,
-      updateLocalStorage,
-      setShowModal
-    };
-  },
-};
-</script>
-
-<style>
-.vm-titlebar{
-  background-color: #403b4f;
-}
-.vm-content{
-  background-color: #403b4f;
-}
-.modal-wrapper {
-  display: flex;
-  align-items: center;
-}
-.modal-wrapper .vm {
-  top: auto;
-}
-
-.modalForm{
-  text-align: center;
-  text-justify: center;
-}
-</style>
+-->
