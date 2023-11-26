@@ -39,7 +39,7 @@
             <input id="healers" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
         </div>
         <div class="field col">
-            <label for="tanks">Num tanks</label>
+            <label for="tanks">Num Tanks</label>
             <input id="tanks" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
         </div>
     </div>
