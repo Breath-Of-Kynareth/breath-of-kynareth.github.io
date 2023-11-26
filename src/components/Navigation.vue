@@ -79,6 +79,11 @@ export default {
 
     const items = ref([
     {
+      label: 'Home',
+      route: '/',
+      icon: 'pi pi-fw pi-home'
+    },
+    {
       label: 'Rosters',
       route: '/rosters',
       icon: 'pi pi-fw pi-copy'
@@ -88,11 +93,6 @@ export default {
         route: '/timestamp',
         icon: 'pi pi-fw pi-history'
         
-    },
-    {
-      label: 'Home',
-      route: '/',
-      icon: 'pi pi-fw pi-home'
     },
     {
         label: 'Set Token',
