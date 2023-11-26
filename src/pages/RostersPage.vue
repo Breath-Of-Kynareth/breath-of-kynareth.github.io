@@ -48,6 +48,7 @@
             <label for="address">Memo</label>
             <textarea id="address" type="text" rows="4" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
         </div>
+        <button @click="createNewRoster()" class="copy-button">Submit</button>
     </div>
   </template>
   
@@ -80,6 +81,10 @@
         const utcTimestamp = Math.floor((formatDate.getTime()) / 1000);
         generatedTimestamp.value = utcTimestamp;
       };
+
+      const createNewRoster = () => {
+        notify({ type: "info", title: 'No Yet Ready', text: "This functionality is not yet ready! Come back later!" });
+      }
   
       onMounted(() => {
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -103,6 +108,7 @@
         ranks,
         rosters,
         generateTimestamp,
+        createNewRoster
       }
     }
   }
