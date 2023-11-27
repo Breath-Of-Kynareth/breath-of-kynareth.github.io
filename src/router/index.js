@@ -17,7 +17,11 @@ const routes = [
     path: '/rosters',
     name: 'rosters',
     component: RostersPage
-  }
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect:  { name: 'home' },
+  },
 ];
 
 const router = createRouter({
