@@ -22,31 +22,31 @@
     <div class="formgrid grid container">
         <div class="field col">
             <label for="trial">Trial</label>
-            <input id="trial" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            <input id="trial" v-model="trial" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
         </div>
         <div class="field col">
             <label for="leader">Leader</label>
-            <input id="leader" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            <input id="leader" v-model="leader" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
         </div>
     </div>
     <div class="formgrid grid container">
         <div class="field col">
             <label for="dps">Num DPS</label>
-            <input id="dps" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            <input id="dps" v-model="dps" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
         </div>
         <div class="field col">
             <label for="healers">Num Healers</label>
-            <input id="healers" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            <input id="healers" v-model="healers" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
         </div>
         <div class="field col">
             <label for="tanks">Num Tanks</label>
-            <input id="tanks" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            <input id="tanks" v-model="tanks" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
         </div>
     </div>
     <div class="formgrid grid container">
         <div class="field col-12">
-            <label for="address">Memo</label>
-            <textarea id="address" type="text" rows="4" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
+            <label for="memo">Memo</label>
+            <textarea id="memo" v-model="memo" type="text" rows="4" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
         </div>
         <button @click="createNewRoster()" class="copy-button">Submit</button>
     </div>
@@ -75,6 +75,12 @@
       const rankSelector = ref();
       const ranks = ["None"];
       const rosters = ["Create New"];
+      const leader = ref();
+      const trial = ref();
+      const dps = ref();
+      const healers = ref();
+      const tanks = ref();
+      const memo = ref();
 
       const generateTimestamp = () => {
         const formatDate = new Date(date.value)
@@ -90,6 +96,10 @@
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         timezone.value = userTimezone;
         generateTimestamp();
+        dps.value = "8";
+        healers.value="2";
+        tanks.value="2"
+        memo.value="None"
         const storedName = localStorage.getItem("bokToken");
         if (!storedName || storedName === 'None') {
             notify({ type: "error", title: 'No Token Set', text: "Please generate a token and set it in the Set Token button in the navbar menu." });
@@ -107,6 +117,12 @@
         rankSelector,
         ranks,
         rosters,
+        leader,
+        trial,
+        dps,
+        healers,
+        tanks,
+        memo,
         generateTimestamp,
         createNewRoster
       }
