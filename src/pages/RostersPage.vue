@@ -98,8 +98,8 @@
         generateTimestamp();
         dps.value = "8";
         healers.value="2";
-        tanks.value="2"
-        memo.value="None"
+        tanks.value="2";
+        memo.value="None";
         const storedName = localStorage.getItem("bokToken");
         if (!storedName || storedName === 'None') {
             notify({ type: "error", title: 'No Token Set', text: "Please generate a token and set it in the Set Token button in the navbar menu." });
