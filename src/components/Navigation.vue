@@ -36,13 +36,6 @@
 </template>
 
 <script lang="ts">
-/*
-
-  <div class="card relative z-2">
-      <Menubar :model="items"><img alt="logo" src="https://primefaces.org/cdn/primevue/images/logo.svg" height="40" class="mr-2" /></Menubar>
-  </div>
-
-*/
 import { ref, onMounted } from "vue";
 // @ts-ignore
 import { Modal, useModal } from '@kouts/vue-modal';
@@ -65,12 +58,9 @@ export default {
     const saveName = () => {
       if (bokToken.value) {
         localStorage.setItem("bokToken", bokToken.value);
+        bokToken.value = null;
       }
       showModal.value = false;
-    };
-
-    const updateLocalStorage = () => {
-      localStorage.setItem("bokToken", bokToken.value!);
     };
 
     const setShowModal = () => {
@@ -103,8 +93,7 @@ export default {
 
     onMounted(() => {
       const storedName = localStorage.getItem("bokToken");
-      if (storedName) {
-        bokToken.value = storedName;
+      if (storedName !== "None") {
         showModal.value = false;
       } else {
         localStorage.setItem("bokToken", "None");
@@ -121,7 +110,6 @@ export default {
       showModal,
       bokToken,
       saveName,
-      updateLocalStorage,
       setShowModal
     };
   },
