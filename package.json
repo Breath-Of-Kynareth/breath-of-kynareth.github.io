@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview",
+    "dev": "NODE_ENV=dev vite",
+    "build": "NODE_ENV=production vue-tsc && vite build",
+    "preview": "NODE_ENV=production vite preview",
     "predeploy": "npm run build",
-    "deploy": "copy dist\\index.html dist\\404.html && copy CNAME dist\\CNAME && gh-pages -d dist"
+    "deploy": "NODE_ENV=production copy dist\\index.html dist\\404.html && copy CNAME dist\\CNAME && gh-pages -d dist"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
+    "dotenv": "^16.3.1",
     "gh-pages": "^6.0.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
