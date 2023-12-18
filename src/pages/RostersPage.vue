@@ -4,7 +4,10 @@
     <div class="grid nested-grid grid-nogutter container">
       <div class="col-12 sm:col-12">
         <Dropdown filter name="roster-select" id="roster-select" v-model="rosterSelector" 
-          :options=rosters placeholder="Select Roster"/>
+          :options=rosters placeholder="Select Roster" @change="loadRoster"/>
+          <button @click="reloadOptions()" class="copy-button">
+                  <font-awesome-icon :icon="['fas','rotate-right']" size="lg" style="color: #2f8a02" /> Reload Options
+                </button>
       </div>
       <label for="leader">Select Time</label>
       <div class="col-12 sm:col-12 selector-container">
@@ -62,7 +65,9 @@
   // @ts-ignore
   import { DateTime } from "luxon";
   import { notify } from "@kyvg/vue3-notification";
-  
+  import { rosterService } from '../service/rosterService';
+  import { ExistingRaid, NewRaid } from '../models/raid';
+
   export default {
     components: { VueDatePicker, Dropdown, Navigation },
     setup() {
@@ -74,13 +79,15 @@
       const rosterSelector = ref();
       const rankSelector = ref();
       const ranks = ["None"];
-      const rosters = ["Create New"];
+      const rosters = ref();
       const leader = ref();
       const trial = ref();
       const dps = ref();
       const healers = ref();
       const tanks = ref();
       const memo = ref();
+      const allRosters = ref();
+      var submittable: boolean = true;
 
       const generateTimestamp = () => {
         const formatDate = new Date(date.value)
@@ -90,7 +97,81 @@
 
       const createNewRoster = () => {
         notify({ type: "info", title: 'No Yet Ready', text: "This functionality is not yet ready! Come back later!" });
+        if (submittable === false){
+          return;
+        }
+        
+      }
+
+      const loadRosterOptions = async () => {
+        const storedToken = localStorage.getItem("bokToken");
+        allRosters.value = []
+        const blankRaid: NewRaid= {
+          raid: '',
+          leader: '',
+          date: generatedTimestamp.value,
+          dps_limit: 8,
+          healer_limit: 2,
+          tank_limit: 2,
+          role_limit: 1,
+          memo: 'None'
+        }
+        allRosters.value.push(blankRaid)
+        allRosters.value.push()
+        if (storedToken === "None" || storedToken === null) {
+          notify({ type: "error", title: 'No Token Set', text: "Please generate a token and set it in the Set Token button in the navbar menu." });
+        } else {
+          
+          rosters.value = ["Create New"];
+          const rosterList = await rosterService.getAllRosters();
+
+          for(let i: number = 0; i < rosterList.length; i++) {
+            const roster: ExistingRaid = rosterList[i];
+            const rosterTimestamp = roster.data.date;
+            if (!rosterTimestamp) {
+              console.log('No Timestamp found for current roster.');
+              continue;
+            }
+            const rosterName = generateRosterName(Number(rosterTimestamp.match(/\d+/g)) | 0, roster.data.raid);
+            rosters.value.push(rosterName)
+            allRosters.value.push(roster)
+          }
+        }
+      }
+
+      const loadRoster = () => {
+        const roster: ExistingRaid = allRosters.value[(rosters.value.indexOf(rosterSelector.value))];
         console.log(roster);
+
+      }
+
+      const generateRosterName = (timestamp: number, raid: string) => {
+        // FORMAT: TRIAL-DAY_OF_WEEK-DAY_OF_MONTH
+        const weekdays = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
+        const date = new Date (timestamp * 1000)
+        return `${ raid }-${ weekdays[date.getDay()] }-${ date.getDate() }${ getDaySuffix(date.getDate()) }`;
+      }
+
+      const getDaySuffix = (day: number) => {
+        if (day >= 11 && day <= 13) {
+            return 'th';
+        }
+
+        switch (day % 10) {
+            case 1:
+                return 'st';
+            case 2:
+                return 'nd';
+            case 3:
+                return 'rd';
+            default:
+                return 'th';
+        }
+      }
+
+
+      const reloadOptions = () => {
+        loadRosterOptions();
       }
   
       onMounted(() => {
@@ -101,10 +182,7 @@
         healers.value="2";
         tanks.value="2";
         memo.value="None";
-        const storedName = localStorage.getItem("bokToken");
-        if (!storedName || storedName === 'None') {
-            notify({ type: "error", title: 'No Token Set', text: "Please generate a token and set it in the Set Token button in the navbar menu." });
-        }
+        loadRosterOptions();
       });
   
   
@@ -124,8 +202,15 @@
         healers,
         tanks,
         memo,
+        submittable,
+        allRosters,
         generateTimestamp,
-        createNewRoster
+        createNewRoster,
+        loadRosterOptions,
+        reloadOptions,
+        generateRosterName,
+        getDaySuffix,
+        loadRoster
       }
     }
   }
