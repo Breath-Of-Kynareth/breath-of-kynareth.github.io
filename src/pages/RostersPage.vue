@@ -107,17 +107,18 @@
         const storedToken = localStorage.getItem("bokToken");
         allRosters.value = []
         const blankRaid: NewRaid= {
-          raid: '',
-          leader: '',
-          date: generatedTimestamp.value,
-          dps_limit: 8,
-          healer_limit: 2,
-          tank_limit: 2,
-          role_limit: 1,
-          memo: 'None'
+          data: {
+            raid: '',
+            leader: '',
+            date: `${generatedTimestamp.value}`,
+            dps_limit: 8,
+            healer_limit: 2,
+            tank_limit: 2,
+            role_limit: 1,
+            memo: 'None'
+          }
         }
         allRosters.value.push(blankRaid)
-        allRosters.value.push()
         if (storedToken === "None" || storedToken === null) {
           notify({ type: "error", title: 'No Token Set', text: "Please generate a token and set it in the Set Token button in the navbar menu." });
         } else {
@@ -141,8 +142,14 @@
 
       const loadRoster = () => {
         const roster: ExistingRaid = allRosters.value[(rosters.value.indexOf(rosterSelector.value))];
-        console.log(roster);
-
+        // TODO: SET LIMIT TOO ONCE THAT FUNCTIONALITY IS ADDED
+        leader.value = roster.data.leader,
+        trial.value = roster.data.raid,
+        dps.value = roster.data.dps_limit,
+        healers.value = roster.data.healer_limit,
+        tanks.value = roster.data.tank_limit,
+        memo.value = roster.data.memo
+        date.value = new Date (Number(roster.data.date.match(/\d+/g)) * 1000)
       }
 
       const generateRosterName = (timestamp: number, raid: string) => {
