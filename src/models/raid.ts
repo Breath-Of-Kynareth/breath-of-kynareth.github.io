@@ -19,12 +19,14 @@ export interface ExistingRaid{
 }
 
 export interface NewRaid{
-    raid: string;
-    date: string;
-    leader: string;
-    dps_limit: number;
-    healer_limit: number;
-    tank_limit: number;
-    role_limit: number;
-    memo: string;    
+    data: {
+        raid: string;
+        date: string;
+        leader: string;
+        dps_limit: number;
+        healer_limit: number;
+        tank_limit: number;
+        role_limit: number;
+        memo: string; 
+    }   
 }
