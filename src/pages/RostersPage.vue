@@ -90,6 +90,7 @@
 
       const createNewRoster = () => {
         notify({ type: "info", title: 'No Yet Ready', text: "This functionality is not yet ready! Come back later!" });
+        console.log(roster);
       }
   
       onMounted(() => {
