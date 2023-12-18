@@ -7,7 +7,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 /* import specific icons */
-import { faClipboard } from '@fortawesome/free-solid-svg-icons';
+import { faClipboard, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
 import { Modal, modalPlugin } from '@kouts/vue-modal';
 import Notifications from '@kyvg/vue3-notification';
@@ -21,7 +21,8 @@ import 'primeflex/primeflex.css';
 import 'animate.css';
 
 /* add icons to the library */
-library.add(faClipboard)
+library.add(faClipboard);
+library.add(faRotateRight);
 
 const app = createApp(App);
 app.use(modalPlugin);
