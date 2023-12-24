@@ -2,6 +2,7 @@
     <Navigation />
 
     <div class="grid nested-grid grid-nogutter container">
+      <label for="roster-select">Select Roster</label>
       <div class="col-12 sm:col-12">
         <Dropdown filter name="roster-select" id="roster-select" v-model="rosterSelector" 
           :options=rosters placeholder="Select Roster" @change="loadRoster"/>
@@ -16,7 +17,7 @@
         <VueDatePicker class ="dp__theme_dark date-picker " :dark="true" v-model="date" :is-24="false" week-start="0" 
           :timezone="timezone" :text-input="textInputOptions" @update:model-value="generateTimestamp" />
       </div>
-      <label for="leader">Set Limit</label>
+      <label for="rank-select">Set Limit</label>
       <div class="col-12 sm:col-12">
         <Dropdown filter name="rank-select" id="rank-select" v-model="rankSelector" 
           :options=ranks placeholder="Select Rank Limit"/>
@@ -67,6 +68,7 @@
   import { notify } from "@kyvg/vue3-notification";
   import { rosterService } from '../service/rosterService';
   import { ExistingRaid, NewRaid } from '../models/raid';
+import { RosterError } from '../errors/errors';
 
   export default {
     components: { VueDatePicker, Dropdown, Navigation },
@@ -78,7 +80,7 @@
       const textInputOptions = {};
       const rosterSelector = ref();
       const rankSelector = ref();
-      const ranks = ["None"];
+      const ranks = ref();
       const rosters = ref();
       const leader = ref();
       const trial = ref();
@@ -96,11 +98,52 @@
       };
 
       const createNewRoster = () => {
-        notify({ type: "info", title: 'No Yet Ready', text: "This functionality is not yet ready! Come back later!" });
+        notify({ type: "info", title: 'Not Yet Ready', text: "This functionality is not yet ready! Come back later!" });
         if (submittable === false){
           return;
         }
-        
+
+        if (memo.value === ''){
+          memo.value = 'None';
+        }
+        if (rosterSelector.value === rosters.value[0]){
+          const newRaid: NewRaid = {
+            data: {
+              raid: trial.value,
+              date: `${generatedTimestamp.value}`,
+              leader: leader.value,
+              dps_limit: dps.value,
+              healer_limit: healers.value,
+              tank_limit: tanks.value,
+              role_limit: ranks.value.indexOf(rankSelector.value),
+              memo: memo.value 
+            }
+          }
+          console.log(newRaid)
+        } else {
+          const originalRaid: ExistingRaid = allRosters.value[(rosters.value.indexOf(rosterSelector.value))];
+          const updatedRaid: ExistingRaid = {
+            channelID: originalRaid.channelID,
+            data: {
+              raid: trial.value,
+              date: `${generatedTimestamp.value}`,
+              leader: leader.value,
+              dps: originalRaid.data.dps,
+              healers: originalRaid.data.healers,
+              tanks: originalRaid.data.tanks,
+              backup_dps: originalRaid.data.backup_dps,
+              backup_healers: originalRaid.data.backup_healers,
+              backup_tanks: originalRaid.data.backup_tanks,
+              dps_limit: dps.value,
+              healer_limit: healers.value,
+              tank_limit: tanks.value,
+              role_limit: ranks.value.indexOf(rankSelector.value),
+              memo: memo.value
+            }
+          }
+          console.log(updatedRaid);
+        }
+
       }
 
       const loadRosterOptions = async () => {
@@ -114,8 +157,8 @@
             dps_limit: 8,
             healer_limit: 2,
             tank_limit: 2,
-            role_limit: 1,
-            memo: 'None'
+            role_limit: 0,
+            memo: 'None',
           }
         }
         allRosters.value.push(blankRaid)
@@ -124,7 +167,18 @@
         } else {
           
           rosters.value = ["Create New"];
-          const rosterList = await rosterService.getAllRosters();
+          let rosterList: ExistingRaid[]
+          try{
+            rosterList = await rosterService.getAllRosters();
+          } catch (e) {
+            if (e instanceof RosterError) {
+              notify({type: "error", title: `${ e.code } Error`, text: e.message});
+              return;
+            }
+            notify({type: "error", title: 'Hit Unknown Error', text: 'An unknown error occured, please reach out to Drak with the console error'});
+            console.error(e);
+            return;
+          }
 
           for(let i: number = 0; i < rosterList.length; i++) {
             const roster: ExistingRaid = rosterList[i];
@@ -138,18 +192,29 @@
             allRosters.value.push(roster)
           }
         }
+        rosterSelector.value = rosters.value[0];
+        rankSelector.value = ranks.value[0];
+        
       }
 
       const loadRoster = () => {
         const roster: ExistingRaid = allRosters.value[(rosters.value.indexOf(rosterSelector.value))];
-        // TODO: SET LIMIT TOO ONCE THAT FUNCTIONALITY IS ADDED
         leader.value = roster.data.leader,
         trial.value = roster.data.raid,
         dps.value = roster.data.dps_limit,
         healers.value = roster.data.healer_limit,
         tanks.value = roster.data.tank_limit,
-        memo.value = roster.data.memo
-        date.value = new Date (Number(roster.data.date.match(/\d+/g)) * 1000)
+        memo.value = roster.data.memo,
+        date.value = new Date (Number(roster.data.date.match(/\d+/g)) * 1000),
+        rankSelector.value = ranks.value[roster.data.role_limit]
+      }
+
+      const loadRanks = async ()  => {
+        ranks.value = []
+        const allRanks = await rosterService.getRankLimits();
+        for (let i: number = 0; i < allRanks.length; i++){
+          ranks.value.push(allRanks[i]);
+        }
       }
 
       const generateRosterName = (timestamp: number, raid: string) => {
@@ -177,8 +242,9 @@
       }
 
 
-      const reloadOptions = () => {
-        loadRosterOptions();
+      const reloadOptions = async () => {
+        await loadRanks();
+        await loadRosterOptions();
       }
   
       onMounted(() => {
@@ -189,7 +255,7 @@
         healers.value="2";
         tanks.value="2";
         memo.value="None";
-        loadRosterOptions();
+        reloadOptions()
       });
   
   
@@ -217,7 +283,8 @@
         reloadOptions,
         generateRosterName,
         getDaySuffix,
-        loadRoster
+        loadRoster,
+        loadRanks
       }
     }
   }

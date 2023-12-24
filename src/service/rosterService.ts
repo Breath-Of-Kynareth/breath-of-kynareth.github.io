@@ -1,5 +1,6 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import  { ExistingRaid, NewRaid } from '../models/raid'
+import { RosterError } from '../errors/errors';
 class RosterService {
 
     private baseUrl: string;
@@ -30,16 +31,32 @@ class RosterService {
         );
         }
 
-    public async createNewRoster(roster: Raid){
+    private validateResponse(validation: AxiosResponse){
+        return validation.status >= 200 &&  validation.status < 300;
+    }
+
+    public async createNewRoster(roster: NewRaid){
 
     }
 
     public async getAllRosters(): Promise<any> {
-        const response = await this.axiosInstance.get('/rosters/Roster-Viewer');
-        return response.data.raids;
+        let response: AxiosResponse
+        response = await this.axiosInstance.get('/rosters/Roster-Viewer');
+        if (this.validateResponse(response)) {
+            return response.data.raids;
+        }
+        throw new RosterError(response.status, response.data.message);
     }
 
     public async updateExistingRoster(){}
+
+    public async getRankLimits(): Promise<string[]>{
+        const response = await this.axiosInstance.get('/ranks')
+        if (this.validateResponse(response)){
+            return response.data.ranks;
+        }
+        throw new RosterError(response.status, response.data.message)
+    }
 }
 
 
