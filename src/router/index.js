@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '../pages/Homepage.vue';
 import TimestampPage from '../pages/TimestampPage.vue'
 import RostersPage from '../pages/RostersPage.vue'
+import VideoPage from '../pages/VideoPage.vue'
+
 const routes = [
   {
     path: '/',
@@ -17,6 +19,11 @@ const routes = [
     path: '/rosters',
     name: 'rosters',
     component: RostersPage
+  },
+  {
+    path: '/videos',
+    name: 'videos',
+    component: VideoPage
   },
   {
     path: '/:catchAll(.*)',
