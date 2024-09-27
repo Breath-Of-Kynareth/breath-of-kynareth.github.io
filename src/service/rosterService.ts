@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import  { ExistingRaid, NewRaid } from '../models/raid'
 import { RosterError } from '../errors/errors';
 class RosterService {
 
@@ -33,10 +32,6 @@ class RosterService {
 
     private validateResponse(validation: AxiosResponse){
         return validation.status >= 200 &&  validation.status < 300;
-    }
-
-    public async createNewRoster(roster: NewRaid){
-
     }
 
     public async getAllRosters(): Promise<any> {
