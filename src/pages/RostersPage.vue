@@ -97,53 +97,65 @@ import { RosterError } from '../errors/errors';
         generatedTimestamp.value = utcTimestamp;
       };
 
-      const createNewRoster = () => {
-        notify({ type: "info", title: 'Not Yet Ready', text: "This functionality is not yet ready! Come back later!" });
+      const createNewRoster = async () => {
         if (submittable === false){
+          notify({ type: "info", title: 'Not Yet Ready', text: "Your previous request is being processed." });
           return;
         }
 
         if (memo.value === ''){
           memo.value = 'None';
         }
-        if (rosterSelector.value === rosters.value[0]){
-          const newRaid: NewRaid = {
-            data: {
-              raid: trial.value,
-              date: `${generatedTimestamp.value}`,
-              leader: leader.value,
-              dps_limit: dps.value,
-              healer_limit: healers.value,
-              tank_limit: tanks.value,
-              role_limit: ranks.value.indexOf(rankSelector.value),
-              memo: memo.value 
+        try{
+          if (rosterSelector.value === rosters.value[0]){
+            const newRaid: NewRaid = {
+              data: {
+                raid: trial.value,
+                date: `${generatedTimestamp.value}`,
+                leader: leader.value,
+                dps_limit: Number(dps.value),
+                healer_limit: Number(healers.value),
+                tank_limit: Number(tanks.value),
+                role_limit: Number(ranks.value.indexOf(rankSelector.value)),
+                memo: memo.value 
+              }
             }
-          }
-          console.log(newRaid)
-        } else {
-          const originalRaid: ExistingRaid = allRosters.value[(rosters.value.indexOf(rosterSelector.value))];
-          const updatedRaid: ExistingRaid = {
-            channelID: originalRaid.channelID,
-            data: {
-              raid: trial.value,
-              date: `${generatedTimestamp.value}`,
-              leader: leader.value,
-              dps: originalRaid.data.dps,
-              healers: originalRaid.data.healers,
-              tanks: originalRaid.data.tanks,
-              backup_dps: originalRaid.data.backup_dps,
-              backup_healers: originalRaid.data.backup_healers,
-              backup_tanks: originalRaid.data.backup_tanks,
-              dps_limit: dps.value,
-              healer_limit: healers.value,
-              tank_limit: tanks.value,
-              role_limit: ranks.value.indexOf(rankSelector.value),
-              memo: memo.value
+            await rosterService.createNewRoster(newRaid);
+            notify({ type: "info", title: 'New Roster Sent', text: "New Roster has been sent to BOKBot." });
+            return;
+          } else {
+            const originalRaid: ExistingRaid = allRosters.value[(rosters.value.indexOf(rosterSelector.value))];
+            const updatedRaid: ExistingRaid = {
+              channelID: originalRaid.channelID,
+              data: {
+                raid: trial.value,
+                date: `${generatedTimestamp.value}`,
+                leader: leader.value,
+                dps: originalRaid.data.dps,
+                healers: originalRaid.data.healers,
+                tanks: originalRaid.data.tanks,
+                backup_dps: originalRaid.data.backup_dps,
+                backup_healers: originalRaid.data.backup_healers,
+                backup_tanks: originalRaid.data.backup_tanks,
+                dps_limit: Number(dps.value),
+                healer_limit: Number(healers.value),
+                tank_limit: Number(tanks.value),
+                role_limit: Number(ranks.value.indexOf(rankSelector.value)),
+                memo: memo.value
+              }
             }
+            await rosterService.updateExistingRoster(updatedRaid);
+            notify({ type: "info", title: 'Sent!', text: "Your roster has been sent to BOKBot." });
           }
-          console.log(updatedRaid);
+        } catch(e){
+            if (e instanceof RosterError) {
+                notify({type: "error", title: `${ e.code } Error`, text: e.message});
+                return;
+              }
+              notify({type: "error", title: 'Hit Unknown Error', text: 'An unknown error occured, please reach out to Drak with the console error'});
+              console.error(e);
+              return;          
         }
-
       }
 
       const loadRosterOptions = async () => {

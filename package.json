@@ -8,7 +8,7 @@
     "build": "NODE_ENV=production vue-tsc && vite build",
     "preview": "NODE_ENV=production vite preview",
     "predeploy": "npm run build",
-    "deploy": "NODE_ENV=production copy dist\\index.html dist\\404.html && copy CNAME dist\\CNAME && gh-pages -d dist"
+    "deploy": "NODE_ENV=production copy dist\\index.html dist\\404.html && copy CNAME dist\\CNAME && copy .env.production dist\\.env.production && gh-pages -d dist"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",

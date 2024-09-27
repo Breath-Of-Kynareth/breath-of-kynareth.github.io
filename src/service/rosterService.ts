@@ -36,7 +36,8 @@ class RosterService {
     }
 
     public async createNewRoster(roster: NewRaid){
-
+        await this.axiosInstance.post('/newRoster', roster);
+        return;
     }
 
     public async getAllRosters(): Promise<any> {
@@ -48,7 +49,10 @@ class RosterService {
         throw new RosterError(response.status, response.data.message);
     }
 
-    public async updateExistingRoster(){}
+    public async updateExistingRoster(roster: ExistingRaid){
+        await this.axiosInstance.post('/updateRoster', roster);
+        return;
+    }
 
     public async getRankLimits(): Promise<string[]>{
         const response = await this.axiosInstance.get('/ranks')
