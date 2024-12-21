@@ -90,11 +90,11 @@ export default {
         icon: 'pi pi-fw pi-youtube'
         
     },
-    {
+    /*{
         label: 'Set Token',
         icon: 'pi pi-fw pi-unlock',
         command: () => setShowModal()
-    }
+    }*/
 ]);
 
     onMounted(() => {
