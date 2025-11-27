@@ -74,8 +74,8 @@ export default {
       icon: 'pi pi-fw pi-home'
     },
     {
-      label: 'Rosters',
-      route: '/rosters',
+      label: 'Advanced Rosters',
+      route: '/advanced-rosters',
       icon: 'pi pi-fw pi-copy'
     },
     {

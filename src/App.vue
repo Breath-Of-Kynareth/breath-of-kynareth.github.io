@@ -14,13 +14,20 @@
 <style scoped>
 
 .video-background {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100%;
+  height: 100%;
   z-index: -1;
+  overflow: hidden;
+}
+
+.background-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 video {

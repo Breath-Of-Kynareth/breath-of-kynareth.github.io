@@ -3,6 +3,7 @@ import HomePage from '../pages/Homepage.vue';
 import TimestampPage from '../pages/TimestampPage.vue'
 import RostersPage from '../pages/RostersPage.vue'
 import VideoPage from '../pages/VideoPage.vue'
+import AdvRosterPage from '../pages/AdvRosterPage.vue'
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: '/rosters',
     name: 'rosters',
     component: RostersPage
+  },
+  {
+    path: '/advanced-rosters',
+    name: 'advanced-rosters',
+    component: AdvRosterPage
   },
   {
     path: '/videos',
